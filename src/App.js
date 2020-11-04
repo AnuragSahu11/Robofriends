@@ -1,26 +1,46 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react'
+import CardList from './CardList'
+import SearchBox from './SearchBox'
+import './App.css'
+import scroll from './scroll'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+function App(){
+    const [robot,setRobot] = useState([])
+    const [searchfield, setSearchfield] = useState('')
+
+    function onSearchChange(e){
+        setSearchfield(e.target.value)
+        
+        
+    }
+
+    useEffect(() => {
+        fetch('https://jsonplaceholder.typicode.com/users/')
+            .then(response => response.json())
+            .then(json => {
+                setRobot(json)
+                
+
+            })
+    },[])
+    
+
+    
+    const searchText = robot.filter(bots => {
+        return(bots.name.toLowerCase().includes(searchfield.toLowerCase()))
+    })
+   
+    return(
+        <div className='flex flex-column'>
+            <div className='tc'>
+            <h1 className='tc f1' >ROBOFRIENDS</h1>
+            <SearchBox searchChange = {onSearchChange} />
+            </div>
+            
+            <CardList className=' tc' robot={searchText} />
+
+        </div>
+    )
 }
-
-export default App;
+export default App
